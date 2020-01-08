@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rec LWT</title>
+	<!-- 接收其他客户端以外断开后发送的遗嘱（LWT） -->
+</head>
+<body>
+	<h1>接受</h1>
+	<script type="text/javascript" src="mqtt.js"></script>
+	<script type="text/javascript">
+		function onSuccess () {
+			console.log('connected success!');
+			// 订阅遗嘱（LWT）topic
+			// CLIENT.subscribe(TOPIC.LWT, {
+			// 	onSuccess: () => console.log('sub:', TOPIC.LWT)
+			// });
+			CLIENT.subscribe(TOPIC.LWT)
+		}
+
+		function onFailure () {
+			console.log('connected fail!');
+		}
+
+		function onMessageArrived (message) {
+			console.log(message);
+		}
+	</script>
+	<script type="text/javascript">
+		const TOPIC = {
+		    LWT: 'LWT/1'
+		}
+
+		//console.log(Paho)
+		const CLIENT = new Paho.Client('192.168.1.10', 1884, 'simple-demo-check-willmessage');
+
+		let willMessage = new Paho.Message('unexpected exit');
+		willMessage.destinationName = TOPIC.LWT;
+
+		CLIENT.connect({
+			reconnect: true,
+			cleanSession: true,
+			willMessage,
+			onSuccess,
+			onFailure
+		});
+
+		Object.assign(CLIENT, {onMessageArrived});
+	</script>
+</body>
+</html>
