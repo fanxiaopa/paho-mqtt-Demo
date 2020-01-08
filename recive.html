@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 引用的是paho-mqtt -->
+    <script src="mqtt.js" type="text/javascript"></script>
+</head>
+<body>
+    <h1>接受</h1>
+    <script>
+      //注意后面的名字不能一样
+        var client = new Paho.Client('192.168.1.10',1884,'testID2')
+      //console.log(client)
+       var options = {
+         //重复连接
+          reconnect: true,
+          cleanSession: true,
+          onSuccess: function(){
+            console.log('mqtt2 connect success');
+            client.subscribe("/test")
+          },
+          onFailure: function(){
+            console.log('mqtt connect fail')
+          }
+       }
+       client.connect(options);
+       //接收到消息时
+       client.onMessageArrived = function(message){
+          console.log(message);
+          console.log(message.payloadString);
+       }
+    </script>
+</body>
+</html>
